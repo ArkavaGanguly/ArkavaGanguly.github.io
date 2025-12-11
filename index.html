@@ -59,29 +59,31 @@
       </div>
     </section>
 
-    <section id="publications" class="section">
-      <div class="content">
-        <h2 class="section-title">Selected publications</h2>
-        <ol class="pub-list">
-          <li>
-            <span class="pub-title">Unified mobility expressions for externally-driven and self-phoretic propulsion of particles.</span><br />
-            <span class="pub-authors">A. Ganguly, S. Roychowdhury &amp; A. Gupta.</span><br />
-            <span class="pub-venue">Journal of Fluid Mechanics</span>, 2024. <a href="#" target="_blank" rel="noopener">Journal / preprint</a>
-          </li>
-          <li>
-            <span class="pub-title">Going in circles: Slender body analysis of a self-propelling bent rod.</span><br />
-            <span class="pub-authors">A. Ganguly &amp; A. Gupta.</span><br />
-            <span class="pub-venue">Physical Review Fluids</span>, 2023, 8, 014103. <a href="#" target="_blank" rel="noopener">Journal / preprint</a>
-          </li>
-          <!-- More publications can be added here -->
-        </ol>
+<section id="publications" class="section">
+  <div class="content">
+    <h2 class="section-title">Publications</h2>
 
-        <p class="scholar-links">
-          A more complete list of publications is available on
-          <a href="https://scholar.google.com/citations?user=2xJymHYAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>.
-        </p>
-      </div>
-    </section>
+    <!-- This list will be populated from publications.bib -->
+    <ol id="pub-list" class="pub-list">
+      <!-- JS will inject <li> items here -->
+    </ol>
+
+    <p id="pub-error" class="scholar-links" style="display:none; color:#a00;">
+      Unable to load publications. You can still find a full list on
+      <a href="https://scholar.google.com/citations?user=2xJymHYAAAAJ&hl=en" target="_blank" rel="noopener">
+        Google Scholar
+      </a>.
+    </p>
+
+    <p class="scholar-links">
+      A more complete list of publications is available on
+      <a href="https://scholar.google.com/citations?user=2xJymHYAAAAJ&hl=en" target="_blank" rel="noopener">
+        Google Scholar
+      </a>.
+    </p>
+  </div>
+</section>
+
 
     <section id="news" class="section">
       <div class="content">
@@ -110,8 +112,88 @@
     </div>
   </footer>
 
+  <!-- BibTeX parser (client-side) -->
+  <script src="https://cdn.jsdelivr.net/npm/@jonny/bibtex-parse-js@0.0.26/bibtexParse.js"></script>
+
+  <script>
+    async function loadPublications() {
+      const listEl = document.getElementById("pub-list");
+      const errorEl = document.getElementById("pub-error");
+      if (!listEl) return;
+
+      try {
+        // Fetch the BibTeX file from your repo root
+        const response = await fetch("publications.bib");
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const bibText = await response.text();
+
+        // Parse BibTeX into JSON entries
+        const entries = bibtexParse.toJSON(bibText) || [];
+
+        // Sort by year (descending)
+        entries.sort((a, b) => {
+          const yearA = parseInt(a.entryTags?.YEAR || "0", 10);
+          const yearB = parseInt(b.entryTags?.YEAR || "0", 10);
+          return yearB - yearA;
+        });
+
+        // Build list items
+        for (const entry of entries) {
+          const tags = entry.entryTags || {};
+
+          // BibTeX keys usually come back uppercased by this parser
+          const title   = tags.TITLE   || "";
+          const authors = tags.AUTHOR  || "";
+          const journal = tags.JOURNAL || tags.BOOKTITLE || "";
+          const year    = tags.YEAR    || "";
+          const doi     = tags.DOI     || "";
+          const url     = tags.URL || (doi ? "https://doi.org/" + doi : "");
+
+          const li = document.createElement("li");
+
+          li.innerHTML =
+            (title
+              ? `<span class="pub-title">${title}</span><br />`
+              : ""
+            ) +
+            (authors
+              ? `<span class="pub-authors">${authors}</span><br />`
+              : ""
+            ) +
+            (journal || year
+              ? `<span class="pub-venue">${journal}${journal && year ? ", " : ""}${year}</span>`
+              : ""
+            ) +
+            (url
+              ? `<br /><a href="${url}" target="_blank" rel="noopener">Link</a>`
+              : ""
+            );
+
+          listEl.appendChild(li);
+        }
+
+        if (!entries.length && errorEl) {
+          errorEl.style.display = "block";
+          errorEl.textContent = "No publications found in publications.bib.";
+        }
+      } catch (err) {
+        console.error("Error loading publications:", err);
+        if (errorEl) {
+          errorEl.style.display = "block";
+        }
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadPublications);
+  </script>
+
+  <!-- Your existing footer-year script can stay below or above this -->
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
+
