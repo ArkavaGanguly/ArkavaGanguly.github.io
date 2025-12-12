@@ -4,10 +4,13 @@
   <meta charset="UTF-8" />
   <title>Arkava Ganguly</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description"
-        content="Arkava Ganguly – Microhydrodynamics, colloids, electrokinetics, and multiscale transport." />
+  <meta
+    name="description"
+    content="Arkava Ganguly – Microhydrodynamics, colloids, electrokinetics, and multiscale transport."
+  />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <header class="site-header">
     <div class="nav-container">
@@ -25,7 +28,7 @@
   </header>
 
   <main id="top" class="page">
-    <!-- ABOUT / HERO -->
+    <!-- ABOUT -->
     <section id="about" class="section hero">
       <div class="content">
         <h1 class="name">Arkava Ganguly</h1>
@@ -48,32 +51,26 @@
             </li>
             <li>
               <strong>Electrokinetics &amp; Phoretic transport:</strong> Diffusiophoresis,
-              electrophoresis, and self-phoretic propulsion of colloids under applied and
-              self-generated fields.
+              electrophoresis, and self-phoretic propulsion under applied and self-generated fields.
             </li>
             <li>
-              <strong>Multiscale transport &amp; modeling:</strong> Bridging microscale physics to
-              macroscopic transport in soft matter, fluid mixing, and charged-particle systems.
+              <strong>Multiscale transport &amp; modeling:</strong> Connecting microscale physics to
+              mesoscale and continuum transport behavior.
             </li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- RESEARCH OVERVIEW -->
+    <!-- RESEARCH -->
     <section id="research" class="section">
       <div class="content">
         <h2 class="section-title">Research overview</h2>
         <p>
           My work sits at the interface of fluid mechanics, electrokinetics, and colloidal science.
           I employ analytical theory, asymptotic and slender-body methods, and computational
-          simulations to derive mobility laws and predict the trajectories and transport behavior of
-          particles in complex fluids.
-        </p>
-        <p>
-          Recently, I have also explored multiscale aspects—extending microscale insights toward
-          mesoscale and continuum-level behavior relevant to transport, separation, and
-          electrokinetic applications.
+          simulations to derive mobility laws and predict particle trajectories and transport in
+          complex fluids.
         </p>
       </div>
     </section>
@@ -83,24 +80,18 @@
       <div class="content">
         <h2 class="section-title">Publications</h2>
 
-        <!-- JS will populate this list from publications.bib -->
-        <ol id="pub-list" class="pub-list">
-          <!-- dynamically filled -->
-        </ol>
+        <ol id="pub-list" class="pub-list"></ol>
 
-        <!-- Error message shown only if loading fails -->
         <p id="pub-error" class="scholar-links" style="display:none;">
           Unable to load publications. You can still find a full list on
-          <a href="https://scholar.google.com/citations?user=2xJymHYAAAAJ&hl=en"
-             target="_blank" rel="noopener">
+          <a href="https://scholar.google.com/citations?user=2xJymHYAAAAJ&hl=en" target="_blank" rel="noopener">
             Google Scholar
           </a>.
         </p>
 
         <p class="scholar-links">
-          A more complete list of publications is available on
-          <a href="https://scholar.google.com/citations?user=2xJymHYAAAAJ&hl=en"
-             target="_blank" rel="noopener">
+          A more complete list is available on
+          <a href="https://scholar.google.com/citations?user=2xJymHYAAAAJ&hl=en" target="_blank" rel="noopener">
             Google Scholar
           </a>.
         </p>
@@ -125,20 +116,13 @@
       <div class="content">
         <h2 class="section-title">Contact</h2>
         <p>
-          Email:
-          <a href="mailto:arkava.ganguly@colorado.edu">arkava.ganguly@colorado.edu</a>
+          Email: <a href="mailto:arkava.ganguly@colorado.edu">arkava.ganguly@colorado.edu</a>
         </p>
         <p>
           GitHub:
-          <a href="https://github.com/ArkavaGanguly"
-             target="_blank" rel="noopener">
-            github.com/ArkavaGanguly
-          </a><br />
+          <a href="https://github.com/ArkavaGanguly" target="_blank" rel="noopener">github.com/ArkavaGanguly</a><br />
           LinkedIn:
-          <a href="https://www.linkedin.com/in/arkava-ganguly/"
-             target="_blank" rel="noopener">
-            linkedin.com/in/arkava-ganguly
-          </a>
+          <a href="https://www.linkedin.com/in/arkava-ganguly/" target="_blank" rel="noopener">linkedin.com/in/arkava-ganguly</a>
         </p>
       </div>
     </section>
@@ -150,82 +134,114 @@
     </div>
   </footer>
 
-  <!-- BibTeX parser from jsDelivr -->
+  <!-- BibTeX parser -->
   <script src="https://cdn.jsdelivr.net/npm/@jonny/bibtex-parse-js@0.0.26/bibtexParse.js"></script>
 
   <script>
+    function safeShowError(msg) {
+      const errorEl = document.getElementById("pub-error");
+      if (!errorEl) return;
+      errorEl.style.display = "block";
+      if (msg) errorEl.textContent = msg;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
     async function loadPublications() {
       const listEl = document.getElementById("pub-list");
-      const errorEl = document.getElementById("pub-error");
       if (!listEl) return;
 
+      // Clear existing items (important on soft reloads)
+      listEl.innerHTML = "";
+
+      // Confirm parser is actually available
+      if (typeof bibtexParse === "undefined" || typeof bibtexParse.toJSON !== "function") {
+        console.error("bibtexParse is not available:", typeof bibtexParse);
+        safeShowError("Publication parser failed to load (bibtexParse unavailable).");
+        return;
+      }
+
       try {
-        const response = await fetch("publications.bib");
-        if (!response.ok) {
-          throw new Error("HTTP " + response.status);
-        }
+        // Cache-bust so updates to publications.bib always appear
+        const url = "publications.bib?v=" + Date.now();
+        const response = await fetch(url, { cache: "no-store" });
+
+        console.log("[pub] fetch", url, "status:", response.status);
+        if (!response.ok) throw new Error("Fetch failed: HTTP " + response.status);
 
         const bibText = await response.text();
-        const entries = bibtexParse.toJSON(bibText) || [];
+        console.log("[pub] first 120 chars:", bibText.slice(0, 120));
 
-        // Sort by year (descending)
+        const entries = bibtexParse.toJSON(bibText) || [];
+        console.log("[pub] parsed entries:", entries.length, entries[0]);
+
+        if (!entries.length) {
+          safeShowError("No publications were parsed from publications.bib.");
+          return;
+        }
+
+        // Helpers: support both lower-case and upper-case keys from different parsers
+        const getTag = (tags, key) =>
+          (tags && (tags[key] ?? tags[key.toLowerCase()] ?? tags[key.toUpperCase()])) || "";
+
+        // Sort by year descending; if missing year, fall back to 0
         entries.sort((a, b) => {
-          const yearA = parseInt(a.entryTags?.YEAR || "0", 10);
-          const yearB = parseInt(b.entryTags?.YEAR || "0", 10);
-          return yearB - yearA;
+          const ta = a.entryTags || {};
+          const tb = b.entryTags || {};
+          const ya = parseInt(getTag(ta, "year") || "0", 10);
+          const yb = parseInt(getTag(tb, "year") || "0", 10);
+          return yb - ya;
         });
 
         for (const entry of entries) {
           const tags = entry.entryTags || {};
 
-          const title   = tags.TITLE   || "";
-          const authors = tags.AUTHOR  || "";
-          const journal = tags.JOURNAL || tags.BOOKTITLE || "";
-          const year    = tags.YEAR    || "";
-          const doi     = tags.DOI     || "";
-          const url     = tags.URL || (doi ? "https://doi.org/" + doi : "");
+          const title   = getTag(tags, "title");
+          const authors = getTag(tags, "author");
+          const journal = getTag(tags, "journal") || getTag(tags, "booktitle");
+          const year    = getTag(tags, "year");
+          const doi     = getTag(tags, "doi");
+          const rawUrl  = getTag(tags, "url");
+          const link    = rawUrl || (doi ? ("https://doi.org/" + doi) : "");
 
           const li = document.createElement("li");
 
-          li.innerHTML =
-            (title
-              ? `<span class="pub-title">${title}</span><br />`
-              : ""
-            ) +
-            (authors
-              ? `<span class="pub-authors">${authors}</span><br />`
-              : ""
-            ) +
-            (journal || year
-              ? `<span class="pub-venue">${journal}${journal && year ? ", " : ""}${year}</span>`
-              : ""
-            ) +
-            (url
-              ? `<br /><a href="${url}" target="_blank" rel="noopener">Link</a>`
-              : ""
-            );
+          const titleHtml   = title   ? `<span class="pub-title">${escapeHtml(title)}</span><br />` : "";
+          const authorsHtml = authors ? `<span class="pub-authors">${escapeHtml(authors)}</span><br />` : "";
+          const venueHtml   = (journal || year)
+            ? `<span class="pub-venue">${escapeHtml(journal)}${journal && year ? ", " : ""}${escapeHtml(year)}</span>`
+            : "";
+          const linkHtml    = link ? `<br /><a href="${escapeHtml(link)}" target="_blank" rel="noopener">Link</a>` : "";
 
-          listEl.appendChild(li);
+          li.innerHTML = titleHtml + authorsHtml + venueHtml + linkHtml;
+
+          // Only append if something is non-empty (avoid blank bullets)
+          if ((title || authors || journal || year || link).trim?.() !== "") {
+            listEl.appendChild(li);
+          }
         }
 
-        if (!entries.length && errorEl) {
-          errorEl.style.display = "block";
-          errorEl.textContent = "No publications found in publications.bib.";
+        // If everything got filtered out as "blank", show error
+        if (!listEl.children.length) {
+          safeShowError("Publications were parsed, but entries appear empty (check BibTeX fields).");
         }
       } catch (err) {
-        console.error("Error loading publications:", err);
-        if (errorEl) {
-          errorEl.style.display = "block";
-        }
+        console.error("[pub] error:", err);
+        safeShowError("Unable to load publications (see browser console for details).");
       }
     }
 
-    document.addEventListener("DOMContentLoaded", loadPublications);
-
-    // Footer year
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", () => {
       const y = document.getElementById("year");
       if (y) y.textContent = new Date().getFullYear();
+      loadPublications();
     });
   </script>
 </body>
