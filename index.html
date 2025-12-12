@@ -22,6 +22,7 @@
         <a href="#research">Research</a>
         <a href="#publications">Publications</a>
         <a href="#news">News</a>
+        <a href="#contact">Contact</a>
         <a href="cv.pdf" target="_blank" rel="noopener">CV</a>
       </nav>
     </div>
@@ -29,39 +30,48 @@
 
   <main id="top" class="page">
     <!-- ABOUT -->
-<section id="about" class="section hero">
-  <div class="content">
-    <div class="profile">
-      <img
-        src="assets/arkava_headshot.png"
-        alt="Arkava Ganguly"
-        loading="lazy"
-        decoding="async"
-      />
-    </div>
+    <section id="about" class="section hero">
+      <!-- clearfix ensures the float doesn't affect later sections -->
+      <div class="content clearfix">
+        <div class="profile">
+          <img
+            src="assets/arkava_headshot.png"
+            alt="Arkava Ganguly"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
 
-    <h1 class="name">Arkava Ganguly</h1>
-    <p class="role">
-      Incoming Postdoctoral Researcher, NYU<br />
-      Ph.D., Chemical &amp; Biological Engineering, University of Colorado Boulder
-    </p>
-    <p class="summary">
-      I work on microhydrodynamics, colloids, and electrokinetics—building theoretical and
-      computational models to understand transport and dynamics of microparticles in complex
-      fluids and confined geometries.
-    </p>
+        <h1 class="name">Arkava Ganguly</h1>
+        <p class="role">
+          Incoming Postdoctoral Researcher, NYU<br />
+          Ph.D., Chemical &amp; Biological Engineering, University of Colorado Boulder
+        </p>
+        <p class="summary">
+          I work on microhydrodynamics, colloids, and electrokinetics—building theoretical and
+          computational models to understand transport and dynamics of microparticles in complex
+          fluids and confined geometries.
+        </p>
 
-    <div class="highlights">
-      <h2 class="section-title">Research themes</h2>
-      <ul>
-        <li><strong>Microhydrodynamics &amp; Colloids:</strong> Particle motion, fluid–structure interactions.</li>
-        <li><strong>Electrokinetics &amp; Phoretic transport:</strong> Diffusiophoresis, electrophoresis, self-phoresis.</li>
-        <li><strong>Multiscale transport &amp; modeling:</strong> Connecting microscale physics to mesoscale transport.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
+        <div class="highlights">
+          <h2 class="section-title">Research themes</h2>
+          <ul>
+            <li>
+              <strong>Microhydrodynamics &amp; Colloids:</strong>
+              Particle motion, fluid–structure interactions.
+            </li>
+            <li>
+              <strong>Electrokinetics &amp; Phoretic transport:</strong>
+              Diffusiophoresis, electrophoresis, self-phoresis.
+            </li>
+            <li>
+              <strong>Multiscale transport &amp; modeling:</strong>
+              Connecting microscale physics to mesoscale transport.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
     <!-- RESEARCH -->
     <section id="research" class="section">
@@ -159,10 +169,8 @@
       const listEl = document.getElementById("pub-list");
       if (!listEl) return;
 
-      // Clear existing items (important on soft reloads)
       listEl.innerHTML = "";
 
-      // Confirm parser is actually available
       if (typeof bibtexParse === "undefined" || typeof bibtexParse.toJSON !== "function") {
         console.error("bibtexParse is not available:", typeof bibtexParse);
         safeShowError("Publication parser failed to load (bibtexParse unavailable).");
@@ -170,7 +178,6 @@
       }
 
       try {
-        // Cache-bust so updates to publications.bib always appear
         const url = "publications.bib?v=" + Date.now();
         const response = await fetch(url, { cache: "no-store" });
 
@@ -188,11 +195,9 @@
           return;
         }
 
-        // Helpers: support both lower-case and upper-case keys from different parsers
         const getTag = (tags, key) =>
           (tags && (tags[key] ?? tags[key.toLowerCase()] ?? tags[key.toUpperCase()])) || "";
 
-        // Sort by year descending; if missing year, fall back to 0
         entries.sort((a, b) => {
           const ta = a.entryTags || {};
           const tb = b.entryTags || {};
@@ -223,13 +228,11 @@
 
           li.innerHTML = titleHtml + authorsHtml + venueHtml + linkHtml;
 
-          // Only append if something is non-empty (avoid blank bullets)
           if ((title || authors || journal || year || link).trim?.() !== "") {
             listEl.appendChild(li);
           }
         }
 
-        // If everything got filtered out as "blank", show error
         if (!listEl.children.length) {
           safeShowError("Publications were parsed, but entries appear empty (check BibTeX fields).");
         }
