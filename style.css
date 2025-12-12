@@ -1,5 +1,5 @@
 /* ===============================
-   Global reset / base
+   Base / reset
    =============================== */
 
 *,
@@ -13,31 +13,30 @@ html, body {
   padding: 0;
 }
 
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  line-height: 1.65;
-  color: #1f2933;             /* dark gray */
-  background-color: #f7f7f9;  /* light gray */
-}
-
-/* Make in-page anchors land below sticky header */
 html {
   scroll-behavior: smooth;
 }
 
 :target {
-  scroll-margin-top: 90px;
+  scroll-margin-top: 92px; /* accounts for sticky header */
 }
 
-/* Limit line length and center the main content */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.65;
+  color: #1f2933;
+  background-color: #f7f7f9;
+}
+
+/* Page width + comfortable padding */
 .page {
-  max-width: 900px;
+  max-width: 920px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+  padding: 1.6rem 1rem 3.2rem;
 }
 
 /* ===============================
-   Header / Navigation
+   Header / navigation
    =============================== */
 
 .site-header {
@@ -49,7 +48,7 @@ html {
 }
 
 .nav-container {
-  max-width: 900px;
+  max-width: 920px;
   margin: 0 auto;
   padding: 0.75rem 1rem;
   display: flex;
@@ -86,7 +85,7 @@ html {
 }
 
 /* ===============================
-   Sections & layout
+   Sections / typography
    =============================== */
 
 .section {
@@ -94,58 +93,23 @@ html {
 }
 
 .hero {
-  padding-top: 2.5rem;
+  padding-top: 2.2rem;
 }
 
 .content {
-  max-width: 900px;
+  max-width: 920px;
 }
 
-/* Section headings */
 .section-title {
   font-size: 1.35rem;
   font-weight: 650;
-  margin: 1.25rem 0 0.65rem;
+  margin: 1.15rem 0 0.65rem;
   color: #111827;
 }
 
-/* ===============================
-   Hero layout + headshot
-   =============================== */
-
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 2rem;
-  align-items: start;
-}
-
-.hero-text {
-  min-width: 0; /* prevents overflow */
-}
-
-.hero-photo {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.hero-photo img {
-  width: 100%;
-  max-width: 320px;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 18px;
-  border: 1px solid #e0e0e5;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
-}
-
-/* ===============================
-   Typography
-   =============================== */
-
 .name {
   font-size: 2.25rem;
-  font-weight: 750;
+  font-weight: 760;
   margin: 0 0 0.25rem;
   letter-spacing: -0.2px;
   color: #111827;
@@ -159,17 +123,15 @@ html {
 
 .summary {
   margin-top: 1rem;
-  max-width: 42rem;
+  max-width: 44rem;
   font-size: 1.03rem;
   color: #1f2933;
 }
 
-/* Paragraph spacing */
 p {
-  margin: 0.8rem 0;
+  margin: 0.85rem 0;
 }
 
-/* Lists */
 ul, ol {
   margin: 0.6rem 0;
   padding-left: 1.2rem;
@@ -190,6 +152,33 @@ a:hover {
 }
 
 /* ===============================
+   Small portrait (float-right)
+   =============================== */
+
+/* This matches the Roggeveen-style “compact profile card” */
+.profile {
+  float: right;
+  width: 220px;               /* controls portrait size */
+  margin: 0.2rem 0 1rem 1.6rem;
+}
+
+.profile img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+  border: 1px solid #e0e0e5;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.10);
+}
+
+/* Prevent float issues in later sections if needed */
+.clearfix::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* ===============================
    Publications
    =============================== */
 
@@ -203,11 +192,10 @@ a:hover {
 
 .pub-list li {
   margin-bottom: 1.1rem;
-  padding-bottom: 0.55rem;
+  padding-bottom: 0.6rem;
   border-bottom: 1px solid #e5e5e5;
 }
 
-/* Title — prominent but not oversized */
 .pub-title {
   font-weight: 650;
   color: #111827;
@@ -215,7 +203,6 @@ a:hover {
   margin-bottom: 0.15rem;
 }
 
-/* Authors — neutral tone */
 .pub-authors {
   color: #374151;
   font-style: italic;
@@ -223,24 +210,16 @@ a:hover {
   margin-bottom: 0.2rem;
 }
 
-/* Venue + year — lightly de-emphasized */
 .pub-venue {
   color: #6b7280;
   font-size: 0.95rem;
 }
 
-/* Publication links (DOI/URL) */
 .pub-list a {
   color: #2563eb;
-  text-decoration: none;
   font-size: 0.95rem;
 }
 
-.pub-list a:hover {
-  text-decoration: underline;
-}
-
-/* Error text for BibTeX load failures */
 #pub-error {
   margin-top: 0.75rem;
   font-size: 0.95rem;
@@ -248,7 +227,7 @@ a:hover {
 }
 
 /* ===============================
-   News section
+   News
    =============================== */
 
 .news-list {
@@ -268,7 +247,7 @@ a:hover {
 }
 
 /* ===============================
-   Contact section
+   Contact
    =============================== */
 
 #contact p {
@@ -289,21 +268,14 @@ a:hover {
 }
 
 /* ===============================
-   Responsive tweaks
+   Responsive
    =============================== */
 
 @media (max-width: 800px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
-
-  .hero-photo {
-    justify-content: flex-start;
-  }
-
-  .hero-photo img {
-    max-width: 260px;
+  .profile {
+    float: none;
+    width: 180px;
+    margin: 0 0 1rem 0;
   }
 }
 
@@ -323,6 +295,6 @@ a:hover {
 
   .pub-list li {
     margin-bottom: 1.2rem;
-    padding-bottom: 0.6rem;
+    padding-bottom: 0.65rem;
   }
 }
