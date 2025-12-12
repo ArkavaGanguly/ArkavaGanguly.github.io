@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>News | Arkava Ganguly</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="nav-container">
+      <div class="brand"><a href="index.html">Arkava Ganguly</a></div>
+      <nav class="site-nav">
+        <a href="index.html#about">About</a>
+        <a href="index.html#research">Research</a>
+        <a href="index.html#publications">Publications</a>
+        <a href="index.html#news">News</a>
+        <a href="cv.pdf" target="_blank" rel="noopener">CV</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <h1>News</h1>
+    <ul class="news-list" id="news-archive"></ul>
+    <p><a href="index.html">← Back to homepage</a></p>
+  </main>
+
+  <script src="news.js"></script>
+  <script>
+    (function () {
+      const items = (window.NEWS_ITEMS || [])
+        .slice()
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      const ul = document.getElementById("news-archive");
+      ul.innerHTML = items.map(item => `
+        <li>
+          <span class="news-date">${item.label}</span>
+          ${item.link
+            ? `<a href="${item.link}" target="_blank" rel="noopener">${item.text}</a>`
+            : item.text}
+        </li>
+      `).join("");
+    })();
+  </script>
+</body>
+</html>
