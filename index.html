@@ -15,15 +15,20 @@
   <header class="site-header">
     <div class="nav-container">
       <div class="brand">
-        <a href="#top">Arkava Ganguly</a>
+        <a href="index.html#top">Arkava Ganguly</a>
       </div>
       <nav class="site-nav">
-        <a href="#about">About</a>
-        <a href="#research">Research</a>
-        <a href="#publications">Publications</a>
-        <a href="#news">News</a>
-        <a href="#contact">Contact</a>
-        <a href="cv.pdf" target="_blank" rel="noopener">CV</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#research">Research</a>
+        <a href="index.html#publications">Publications</a>
+
+        <!-- Link to the separate news page -->
+        <a href="news.html">News</a>
+
+        <a href="index.html#contact">Contact</a>
+
+        <!-- CV is in assets/ -->
+        <a href="assets/cv.pdf" target="_blank" rel="noopener">CV</a>
       </nav>
     </div>
   </header>
@@ -31,7 +36,6 @@
   <main id="top" class="page">
     <!-- ABOUT -->
     <section id="about" class="section hero">
-      <!-- clearfix ensures the float doesn't affect later sections -->
       <div class="content clearfix">
         <div class="profile">
           <img
@@ -109,39 +113,19 @@
       </div>
     </section>
 
-<!-- NEWS -->
-<section id="news" class="section">
-  <div class="content">
-    <h2 class="section-title">News</h2>
+    <!-- NEWS PREVIEW (homepage only) -->
+    <section id="news" class="section">
+      <div class="content">
+        <h2 class="section-title">News</h2>
 
-    <ul class="news-list" id="news-preview"></ul>
+        <ul class="news-list" id="news-preview"></ul>
 
-    <div class="news-more">
-      <a href="news.html">All news →</a>
-    </div>
-  </div>
-</section>
-
-<script src="news.js"></script>
-<script>
-  (function () {
-    const items = (window.NEWS_ITEMS || [])
-      .slice()
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 3); // show most recent 3
-
-    const ul = document.getElementById("news-preview");
-    ul.innerHTML = items.map(item => `
-      <li>
-        <span class="news-date">${item.label}</span>
-        ${item.link
-          ? `<a href="${item.link}" target="_blank" rel="noopener">${item.text}</a>`
-          : item.text}
-      </li>
-    `).join("");
-  })();
-</script>
-
+        <div class="news-more">
+          <!-- Link to the separate news page -->
+          <a href="news.html">All news →</a>
+        </div>
+      </div>
+    </section>
 
     <!-- CONTACT -->
     <section id="contact" class="section">
@@ -165,6 +149,29 @@
       <p>&copy; <span id="year"></span> Arkava Ganguly. Hosted on GitHub Pages.</p>
     </div>
   </footer>
+
+  <!-- NEWS data + preview renderer -->
+  <script src="news.js"></script>
+  <script>
+    (function () {
+      const items = (window.NEWS_ITEMS || [])
+        .slice()
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 3); // show 2–3 items; set to 2 if desired
+
+      const ul = document.getElementById("news-preview");
+      if (!ul) return;
+
+      ul.innerHTML = items.map(item => `
+        <li>
+          <span class="news-date">${item.label}</span>
+          ${item.link
+            ? `<a href="${item.link}" target="_blank" rel="noopener">${item.text}</a>`
+            : item.text}
+        </li>
+      `).join("");
+    })();
+  </script>
 
   <!-- BibTeX parser -->
   <script src="https://cdn.jsdelivr.net/npm/@jonny/bibtex-parse-js@0.0.26/bibtexParse.js"></script>
